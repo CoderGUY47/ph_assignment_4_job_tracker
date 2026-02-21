@@ -145,14 +145,7 @@ function updateJobs(){
   const masterCard = document.querySelector(".job-card");
   //loop through the filtered jobs
   filteredJobs.forEach(function(job){
-    const newCard = masterCard.cloneNode(true);
-    newCard.querySelector(".company-name").textContent = job.company;
-    newCard.querySelector(".job-position").textContent = job.position;
-    newCard.querySelector(".job-location").textContent = job.location;
-    newCard.querySelector(".job-type").textContent = job.type;
-    newCard.querySelector(".job-salary").textContent = job.salary;
-    newCard.querySelector(".job-description").textContent = job.description;
-    newCard.querySelector(".job-status-badge").textContent = job.appliedStatus;
+    const newCard = createJobCard(job, masterCard);
     jobListContainer.appendChild(newCard);
   })
   
