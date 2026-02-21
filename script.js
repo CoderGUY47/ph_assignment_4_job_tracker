@@ -148,15 +148,34 @@ function updateJobs(){
     const newCard = createJobCard(job, masterCard);
     jobListContainer.appendChild(newCard);
   })
-  
+}
   
   //switch tab
   function switchTab(newTab){
     currentTabIndex = newTab;
 
+    const allBtn = document.getElementById('all-btn');
+    const interviewBtn = document.getElementById('interview-btn');
+    const rejectedBtn = document.getElementById('rejected-btn');
+
+    //remove active from all of them
+    allBtn.classList.remove('active');
+    interviewBtn.classList.remove('active')
+    rejectedBtn.classList.remove('active')
+
+    //show 'active' when the button clicked
+    if(newTab === 'all'){
+      allBtn.classList.add('active');
+    }
+    else if(newTab === 'interview'){
+      interviewBtn.classList.add('active');
+    }
+    else if(newTab === 'rejected'){
+      rejectedBtn.classList.add('active');
+    }
+
+    updateJobs();
 
   }
-  
-}
 
 init();
