@@ -105,7 +105,7 @@ const dummyJobs = [
   },
 ];
 
-let jobs = [...dummyJobs];
+let jobs = [...dummyJobs]; //"..." use spread operator to take everything from dummyJobs and put it in the new array
 let currentTabIndex = "all";
 
 
@@ -123,7 +123,6 @@ const listContainer = document.getElementById("list-container");
 //starting point for starting the web afer reloadiing 
 function init(){
   updateJobs();
-//updateStatusPanel();
   }
 
 function updateJobs(){
@@ -153,8 +152,18 @@ function updateJobs(){
     newCard.querySelector(".job-type").textContent = job.type;
     newCard.querySelector(".job-salary").textContent = job.salary;
     newCard.querySelector(".job-description").textContent = job.description;
-    newCard.querySelector(".job-status-badge").textContent = job.status;
+    newCard.querySelector(".job-status-badge").textContent = job.appliedStatus;
     jobListContainer.appendChild(newCard);
   })
   
+  
+  //switch tab
+  function switchTab(newTab){
+    currentTabIndex = newTab;
+
+
+  }
+  
 }
+
+init();
