@@ -107,75 +107,79 @@ const dummyJobs = [
 
 let jobs = [...dummyJobs]; //"..." use spread operator to take everything from dummyJobs and put it in the new array
 let currentTabIndex = "all";
-
-
-
 const jobListContainer = document.getElementById("job-list-container");
-const totalCount = document.getElementById("total-count");
-const statusPanel = document.getElementById("status-panel");
-const interviewCount = document.getElementById("interview-count");
-const rejectedCount = document.getElementById("rejected-count");
-const totalListCount = document.getElementById("total-list-count");
-const listCount = document.getElementById("list-count");
-const listContainer = document.getElementById("list-container");
-
-
-//starting point for starting the web afer reloadiing 
-function init(){
+const mainCard = document.querySelector(".job-card");
+//step-1: starting point for starting the web afer reloadiing
+function jobTracker() {
   updateJobs();
-  }
+}
 
-function updateJobs(){
+//step-2: update jobs function
+function updateJobs() {
   jobListContainer.innerHTML = "";
-  
-  const filteredJobs = jobs.filter(function(job){
-    
-  if(currentTabIndex === "all"){
-    return true;
-  }
-  else if(job.status === currentTabIndex){
-    return true;
-  }
-  else{
-    return false;
-  }
+  const filteredJobs = jobs.filter(
+    (job) => currentTabIndex === "all" || job.status === currentTabIndex,
+  );
+
+  //step-3: Update the stats on the screen using machine helper
+  updateStatsTab({
+    total: jobs.length,
+    interview: jobs.filter((job) => job.status === "interview").length,
+    rejected: jobs.filter((job) => job.status === "rejected").length,
+    filtered: filteredJobs.length,
   });
 
-  //get the main card design from html, and clone it, find it once doing it outside the loop
-  const masterCard = document.querySelector(".job-card");
-  //loop through the filtered jobs
-  filteredJobs.forEach(function(job){
-    const newCard = createJobCard(job, masterCard);
+  //step-4: Check if any jobs are available using machine helper
+  isNoJobs(filteredJobs.length === 0);
+
+  //step-5: loop through filtered jobs and append them
+  filteredJobs.forEach(function (job) {
+    const newCard = newJobCard(job, mainCard);
     jobListContainer.appendChild(newCard);
-  })
+  });
 }
-  
-  //switch tab
-  function switchTab(newTab){
-    currentTabIndex = newTab;
 
-    const allBtn = document.getElementById('all-btn');
-    const interviewBtn = document.getElementById('interview-btn');
-    const rejectedBtn = document.getElementById('rejected-btn');
+//step-6: switch tab within the 3 tabs
+function switchTab(newTab) {
+  currentTabIndex = newTab;
+  updateTab(newTab); // Using machine helper for tab UI
+  updateJobs();
+}
 
-    //remove active from all of them
-    allBtn.classList.remove('active');
-    interviewBtn.classList.remove('active')
-    rejectedBtn.classList.remove('active')
-
-    //show 'active' when the button clicked
-    if(newTab === 'all'){
-      allBtn.classList.add('active');
+//step-7: logic build for job status by using their set Id
+const updateJobStatus = (clickedId, newStatus) => {
+  jobs = jobs.map((job) => {
+    if (job.id === clickedId) {
+      job.status = newStatus; //if match, then change it to interview or rejected
+      job.appliedStatus = newStatus.toUpperCase(); //change to uppercase
+      return job;
+    } else {
+      return job;
     }
-    else if(newTab === 'interview'){
-      interviewBtn.classList.add('active');
-    }
-    else if(newTab === 'rejected'){
-      rejectedBtn.classList.add('active');
-    }
+  });
+  updateJobs();
+};
 
-    updateJobs();
-
+//step-8: logic build for delete job card
+function deleteJob(id) {
+  if (currentTabIndex === "all") { //when tab is in the All tab, then delete the job from the jobs array
+    let newJobList = []; // jobs = jobs.filter((job) => job.id !== id);
+    for (const job of jobs) {
+      if (job.id !== id) {
+        newJobList.push(job); // only keep the job that is not equal to the id
+      }
+    }
+    jobs = newJobList;
+  } 
+  else { //when tab is in the Interview or Rejected tab, then change the status of the job to all
+    jobs = jobs.map((job) => {
+      if (job.id === id) {
+        job.status = "all";
+        job.appliedStatus = "NOT APPLIED";
+      }
+      return job;
+    });
   }
-
-init();
+  updateJobs();
+}
+jobTracker();
