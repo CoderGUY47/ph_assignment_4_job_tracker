@@ -33,15 +33,21 @@ function newJobCard(jobData, mainCard) {
   if (jobData.status === "interview") {
     interviewBadge.classList.remove("hidden");
     interviewBadge.textContent = jobData.appliedStatus;
+    // add border highlight for Interview (Dashed)
+    newCard.classList.remove("border-white/10");
+    newCard.classList.add("border-2", "border-green-500", "border-dashed");
   } else if (jobData.status === "rejected") {
     rejectedBadge.classList.remove("hidden");
     rejectedBadge.textContent = jobData.appliedStatus;
+    // add border highlight for Rejected (Dashed)
+    newCard.classList.remove("border-white/10");
+    newCard.classList.add("border-2","border-rose-500/60", "border-dashed");
   } else {
     statusBadge.classList.remove("hidden");
     statusBadge.textContent = jobData.appliedStatus;
   }
 
-  //step-9: logic build for delete job card
+  //step-9: logic build for delete job card individually,
   const deleteBtn = newCard.querySelector("#delete-btn");
   deleteBtn.addEventListener("click", function () {
     deleteJob(jobData.id);
@@ -70,16 +76,13 @@ function isNoJobs(isShown) {
 
 function updateTab(activeTab) {
   const tabs = ["all", "interview", "rejected"];
-  tabs.forEach((tabName) => { // target every element with these 3 id's
-
+  tabs.forEach((tabName) => {
     const statusTab = document.getElementById(`${tabName}-btn`);
-    tabs.forEach((tabElement) => {
-      if (tabName === activeTab) { //check if the current tab is the clicked one
-        statusTab.classList.add("active");
-      }
-      else {
-        statusTab.classList.remove("active");
-      }
-    });
+
+    if (tabName === activeTab) {
+      statusTab.classList.add("active");
+    } else {
+      statusTab.classList.remove("active");
+    }
   });
 }
