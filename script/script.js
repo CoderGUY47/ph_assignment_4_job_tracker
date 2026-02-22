@@ -124,6 +124,7 @@ function updateJobs() {
   //step-3: Update the stats on the screen using machine helper
   updateStatsTab({
     total: jobs.length,
+    applied: jobs.filter((job) => job.status === "applied").length,
     interview: jobs.filter((job) => job.status === "interview").length,
     rejected: jobs.filter((job) => job.status === "rejected").length,
     filtered: filteredJobs.length,
@@ -135,7 +136,7 @@ function updateJobs() {
   //step-5: loop through filtered jobs and append them
   filteredJobs.forEach(function (job) {
     const newCard = newJobCard(job, mainCard);
-    jobListContainer.appendChild(newCard);
+    jobListContainer.appendChild(newCard); //use last child of the parent and the parent of this is job-list-container
   });
 }
 
@@ -162,7 +163,8 @@ const updateJobStatus = (clickedId, newStatus) => {
 
 //step-8: logic build for delete job card
 function deleteJob(id) {
-  if (currentTabIndex === "all") { //when tab is in the All tab, then delete the job from the jobs array
+  if (currentTabIndex === "all") {
+    //when tab is in the All tab, then delete the job from the jobs array
     let newJobList = []; // jobs = jobs.filter((job) => job.id !== id);
     for (const job of jobs) {
       if (job.id !== id) {
@@ -170,8 +172,8 @@ function deleteJob(id) {
       }
     }
     jobs = newJobList;
-  } 
-  else { //when tab is in the Interview or Rejected tab, then change the status of the job to all
+  } else {
+    //when tab is in the Interview or Rejected tab, then change the status of the job to all
     jobs = jobs.map((job) => {
       if (job.id === id) {
         job.status = "all";
@@ -182,4 +184,5 @@ function deleteJob(id) {
   }
   updateJobs();
 }
+
 jobTracker();

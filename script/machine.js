@@ -10,42 +10,48 @@ function newJobCard(jobData, mainCard) {
   newCard.querySelector(".job-salary").textContent = jobData.salary;
   newCard.querySelector(".job-description").textContent = jobData.description;
 
-  const interviewBtn = newCard.querySelector(".interview-btn");
-  interviewBtn.addEventListener("click", function () {
-    updateJobStatus(jobData.id, "interview");
+  const statusButtons = ["applied", "interview", "rejected"];
+  statusButtons.forEach((status) => {
+    newCard
+      .querySelector(`.${status}-btn`)
+      .addEventListener("click", function () {
+        updateJobStatus(jobData.id, status);
+      });
   });
 
-  const rejectedBtn = newCard.querySelector(".rejected-btn");
-  rejectedBtn.addEventListener("click", function () {
-    updateJobStatus(jobData.id, "rejected");
+  const badgeSelectors = [
+    ".job-status-badge",
+    ".applied-status-badge",
+    ".interview-status-badge",
+    ".rejected-status-badge",
+  ];
+  badgeSelectors.forEach((selector) => {
+    newCard.querySelector(selector).classList.add("hidden");
   });
 
-  const statusBadge = newCard.querySelector(".job-status-badge");
-  const interviewBadge = newCard.querySelector(".interview-status-badge");
-  const rejectedBadge = newCard.querySelector(".rejected-status-badge");
+  const activeSelector =
+    jobData.status === "all"
+      ? ".job-status-badge"
+      : `.${jobData.status}-status-badge`;
+  const activeBadge = newCard.querySelector(activeSelector);
+  activeBadge.classList.remove("hidden");
+  activeBadge.textContent = jobData.appliedStatus;
 
-  //first hide this badges
-  statusBadge.classList.add("hidden");
-  interviewBadge.classList.add("hidden");
-  rejectedBadge.classList.add("hidden");
+  const statusStyles = {
+    applied: "border-amber-500",
+    interview: "border-green-500",
+    rejected: "border-rose-500/60",
+  };
 
-  //show the badge when clicked with the correct one
-  if (jobData.status === "interview") {
-    interviewBadge.classList.remove("hidden");
-    interviewBadge.textContent = jobData.appliedStatus;
-    // add border highlight for Interview (Dashed)
+  if (statusStyles[jobData.status]) {
     newCard.classList.remove("border-white/10");
-    newCard.classList.add("border-2", "border-green-500", "border-dashed");
-  } else if (jobData.status === "rejected") {
-    rejectedBadge.classList.remove("hidden");
-    rejectedBadge.textContent = jobData.appliedStatus;
-    // add border highlight for Rejected (Dashed)
-    newCard.classList.remove("border-white/10");
-    newCard.classList.add("border-2","border-rose-500/60", "border-dashed");
-  } else {
-    statusBadge.classList.remove("hidden");
-    statusBadge.textContent = jobData.appliedStatus;
+    newCard.classList.add(
+      "border-2",
+      "border-dashed",
+      statusStyles[jobData.status],
+    );
   }
+
 
   //step-9: logic build for delete job card individually,
   const deleteBtn = newCard.querySelector("#delete-btn");
@@ -58,11 +64,18 @@ function newJobCard(jobData, mainCard) {
 }
 
 function updateStatsTab(counts) {
-  document.getElementById("total-count").textContent = counts.total;
-  document.getElementById("interview-count").textContent = counts.interview;
-  document.getElementById("rejected-count").textContent = counts.rejected;
-  document.getElementById("total-list-count").textContent = counts.filtered;
-  document.getElementById("list-count").textContent = counts.total;
+  const mapping = { //map the hmtl id to the data from counts object
+    "total-count": counts.total,
+    "applied-count": counts.applied,
+    "interview-count": counts.interview,
+    "rejected-count": counts.rejected,
+    "total-list-count": counts.filtered,
+    "list-count": counts.total,
+  };
+  //update the job status counts
+  Object.keys(mapping).forEach((id) => {
+    document.getElementById(id).textContent = mapping[id];
+  });
 }
 
 function isNoJobs(isShown) {
@@ -75,7 +88,7 @@ function isNoJobs(isShown) {
 }
 
 function updateTab(activeTab) {
-  const tabs = ["all", "interview", "rejected"];
+  const tabs = ["all", "applied", "interview", "rejected"];
   tabs.forEach((tabName) => {
     const statusTab = document.getElementById(`${tabName}-btn`);
 
