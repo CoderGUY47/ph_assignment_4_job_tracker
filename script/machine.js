@@ -52,8 +52,6 @@ function newJobCard(jobData, mainCard) {
     );
   }
 
-
-  //step-9: logic build for delete job card individually,
   const deleteBtn = newCard.querySelector("#delete-btn");
   deleteBtn.addEventListener("click", function () {
     deleteJob(jobData.id);
