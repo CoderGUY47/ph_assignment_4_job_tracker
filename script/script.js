@@ -9,7 +9,7 @@ const dummyJobs = [
     salary: "$120,000 - $150,000",
     description:
       "Build cross-platform mobile applications using React Native. Work on products used by millions of users worldwide.",
-    status: "all", // "all", "interview", "rejected"
+    status: "all", //"all", "interview", "rejected"
     appliedStatus: "NOT APPLIED",
   },
   {
@@ -138,7 +138,7 @@ function updateJobs() {
 //step-6: switch tab within the 3 tabs
 function switchTab(newTab) {
   currentTabIndex = newTab;
-  updateTab(newTab); // Using machine helper for tab UI
+  updateTab(newTab); //Using machine helper for tab UI
 }
 
 //step-7: logic build for job status by using their set Id
@@ -158,10 +158,10 @@ const updateJobStatus = (clickedId, newStatus) => {
 function deleteJob(id) {
   if (currentTabIndex === "all") {
     //when tab is in the All tab, then delete the job from the jobs array
-    let newJobList = []; // jobs = jobs.filter((job) => job.id !== id);
+    let newJobList = []; //jobs = jobs.filter((job) => job.id !== id);
     for (const job of jobs) {
       if (job.id !== id) {
-        newJobList.push(job); // only keep the job that is not equal to the id
+        newJobList.push(job); //only keep the job that is not equal to the id
       }
     }
     jobs = newJobList;
@@ -177,20 +177,20 @@ function deleteJob(id) {
   }
 }
 
-// listen to all click on the entire webpage
+//listen to all click on the entire webpage
 document.addEventListener("click", (event) => {
-  // check if they clicked a button, a status card, or anything interactive
+  //check if they clicked a button, a status card, or anything interactive
   if (
     event.target.closest("button") ||
     event.target.closest(".status-card") ||
     event.target.closest(".btn-tab")
   ) {
-    // we use setTimeout so it waits for your normal functions (like deleteJob) to finish changing the data FIRST, before it redraws the screen!
+    //we use setTimeout so it waits for your normal functions (like deleteJob) to finish changing the data FIRST, before it redraws the screen!
     setTimeout(() => {
       updateJobs();
     }, 0);
   }
 });
 
-// Draw the first 8 jobs when the website first loads
+//draw the first 8 jobs when the website first loads
 updateJobs();
