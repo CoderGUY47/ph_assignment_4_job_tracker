@@ -1,0 +1,159 @@
+console.log("This is machine.js file");
+
+//step-2: card creation function
+function newJobCard(jobData, mainCard) {
+  const newCard = mainCard.cloneNode(true);
+  newCard.querySelector(".company-name").textContent = jobData.company;
+  newCard.querySelector(".job-position").textContent = jobData.position;
+  newCard.querySelector(".job-location").textContent = jobData.location;
+  newCard.querySelector(".job-type").textContent = jobData.type;
+  newCard.querySelector(".job-salary").textContent = jobData.salary;
+  newCard.querySelector(".job-description").textContent = jobData.description;
+
+  // const appliedBtn = newCard.querySelector(".applied-btn");
+  // appliedBtn.addEventListener("click", function () {
+  //   updateJobStatus(jobData.id, "applied");
+  // });
+
+  // const interviewBtn = newCard.querySelector(".interview-btn");
+  // interviewBtn.addEventListener("click", function () {
+  //   updateJobStatus(jobData.id, "interview");
+  // });
+
+  // const rejectedBtn = newCard.querySelector(".rejected-btn");
+  // rejectedBtn.addEventListener("click", function () {
+  //   updateJobStatus(jobData.id, "rejected");
+  // });
+
+  const statusButtons = ["applied", "interview", "rejected"];
+  statusButtons.forEach((status) => {
+    newCard
+      .querySelector(`.${status}-btn`)
+      .addEventListener("click", function () {
+        updateJobStatus(jobData.id, status);
+      });
+  });
+
+  const badgeSelectors = [
+    ".job-status-badge",
+    ".applied-status-badge",
+    ".interview-status-badge",
+    ".rejected-status-badge",
+  ];
+  badgeSelectors.forEach((selector) => {
+    newCard.querySelector(selector).classList.add("hidden");
+  });
+
+  const activeSelector =
+    jobData.status === "all"
+      ? ".job-status-badge"
+      : `.${jobData.status}-status-badge`;
+  const activeBadge = newCard.querySelector(activeSelector);
+  activeBadge.classList.remove("hidden");
+  activeBadge.textContent = jobData.appliedStatus;
+
+  const statusStyles = {
+    applied: "border-amber-500",
+    interview: "border-green-500",
+    rejected: "border-rose-500/60",
+  };
+
+  if (statusStyles[jobData.status]) {
+    newCard.classList.remove("border-white/10");
+    newCard.classList.add(
+      "border-2",
+      "border-dashed",
+      statusStyles[jobData.status],
+    );
+  }
+
+  // const statusBadge = newCard.querySelector(".job-status-badge");
+  // const appliedBadge = newCard.querySelector(".applied-status-badge");
+  // const interviewBadge = newCard.querySelector(".interview-status-badge");
+  // const rejectedBadge = newCard.querySelector(".rejected-status-badge");
+
+  // //first hide this badges
+  // statusBadge.classList.add("hidden");
+  // appliedBadge.classList.add("hidden");
+  // interviewBadge.classList.add("hidden");
+  // rejectedBadge.classList.add("hidden");
+
+  // //show the badge when clicked with the correct one
+  // if (jobData.status === "applied") {
+  //   appliedBadge.classList.remove("hidden");
+  //   appliedBadge.textContent = jobData.appliedStatus;
+  //   // add border highlight for Applied (Dashed)
+  //   newCard.classList.remove("border-white/10");
+  //   newCard.classList.add("border-2", "border-amber-500", "border-dashed");
+  // } else if (jobData.status === "interview") {
+  //   interviewBadge.classList.remove("hidden");
+  //   interviewBadge.textContent = jobData.appliedStatus;
+  //   // add border highlight for Interview (Dashed)
+  //   newCard.classList.remove("border-white/10");
+  //   newCard.classList.add("border-2", "border-green-500", "border-dashed");
+  // } else if (jobData.status === "rejected") {
+  //   rejectedBadge.classList.remove("hidden");
+  //   rejectedBadge.textContent = jobData.appliedStatus;
+  //   // add border highlight for Rejected (Dashed)
+  //   newCard.classList.remove("border-white/10");
+  //   newCard.classList.add("border-2", "border-rose-500/60", "border-dashed");
+  // } else {
+  //   statusBadge.classList.remove("hidden");
+  //   statusBadge.textContent = jobData.appliedStatus;
+  // }
+
+  //step-9: logic build for delete job card individually,
+  const deleteBtn = newCard.querySelector("#delete-btn");
+  deleteBtn.addEventListener("click", function () {
+    deleteJob(jobData.id);
+    console.log("delete button clicked", jobData.id);
+  });
+
+  return newCard;
+}
+
+function updateStatsTab(counts) {
+  const mapping = { //map the hmtl id to the data from counts object
+    "total-count": counts.total,
+    "applied-count": counts.applied,
+    "interview-count": counts.interview,
+    "rejected-count": counts.rejected,
+    "total-list-count": counts.filtered,
+    "list-count": counts.total,
+  };
+  //update the job status counts
+  Object.keys(mapping).forEach((id) => {
+    document.getElementById(id).textContent = mapping[id];
+  });
+}
+
+// function updateStatsTab(counts) {
+//   document.getElementById("total-count").textContent = counts.total;
+//   document.getElementById("applied-count").textContent = counts.applied;
+//   document.getElementById("interview-count").textContent = counts.interview;
+//   document.getElementById("rejected-count").textContent = counts.rejected;
+//   document.getElementById("total-list-count").textContent = counts.filtered;
+//   document.getElementById("list-count").textContent = counts.total;
+// }
+
+function isNoJobs(isShown) {
+  const noJobsCard = document.getElementById("no-jobs-card");
+  if (isShown) {
+    noJobsCard.classList.remove("hidden"); //show panel
+  } else {
+    noJobsCard.classList.add("hidden"); //hide panel
+  }
+}
+
+function updateTab(activeTab) {
+  const tabs = ["all", "applied", "interview", "rejected"];
+  tabs.forEach((tabName) => {
+    const statusTab = document.getElementById(`${tabName}-btn`);
+
+    if (tabName === activeTab) {
+      statusTab.classList.add("active");
+    } else {
+      statusTab.classList.remove("active");
+    }
+  });
+}

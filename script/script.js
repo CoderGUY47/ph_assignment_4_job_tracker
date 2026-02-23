@@ -109,12 +109,7 @@ let jobs = [...dummyJobs]; //"..." use spread operator to take everything from d
 let currentTabIndex = "all";
 const jobListContainer = document.getElementById("job-list-container");
 const mainCard = document.querySelector(".job-card");
-//step-1: starting point for starting the web afer reloadiing
-function jobTracker() {
-  updateJobs();
-}
-
-//step-2: update jobs function
+//step-1: update jobs function
 function updateJobs() {
   jobListContainer.innerHTML = "";
   const filteredJobs = jobs.filter(
@@ -144,7 +139,6 @@ function updateJobs() {
 function switchTab(newTab) {
   currentTabIndex = newTab;
   updateTab(newTab); // Using machine helper for tab UI
-  updateJobs();
 }
 
 //step-7: logic build for job status by using their set Id
@@ -158,7 +152,6 @@ const updateJobStatus = (clickedId, newStatus) => {
       return job;
     }
   });
-  updateJobs();
 };
 
 //step-8: logic build for delete job card
@@ -182,7 +175,22 @@ function deleteJob(id) {
       return job;
     });
   }
-  updateJobs();
 }
 
-jobTracker();
+// listen to all click on the entire webpage
+document.addEventListener("click", (event) => {
+  // check if they clicked a button, a status card, or anything interactive
+  if (
+    event.target.closest("button") ||
+    event.target.closest(".status-card") ||
+    event.target.closest(".btn-tab")
+  ) {
+    // we use setTimeout so it waits for your normal functions (like deleteJob) to finish changing the data FIRST, before it redraws the screen!
+    setTimeout(() => {
+      updateJobs();
+    }, 0);
+  }
+});
+
+// Draw the first 8 jobs when the website first loads
+updateJobs();
